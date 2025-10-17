@@ -13,7 +13,8 @@ class App extends StatelessWidget {
       title: 'Sandwitch Shop App',
       home: Scaffold(
         appBar: AppBar(title: const Text('Sandwitch Counter')),
-        body: Center(
+        body: 
+        /* Center(
           child: Container(
             alignment: Alignment.center,
             color: Colors.amber,
@@ -21,6 +22,32 @@ class App extends StatelessWidget {
             height: 200,
             child: OrderItemDisplay(5, "Footlong"),
           ),
+        ), */
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              color: Colors.red,
+              width: 100,
+              height: 100,
+              child: OrderItemDisplay(2, "Club"),
+            ),
+            Container(
+              alignment: Alignment.center,
+              color: Colors.green,
+              width: 100,
+              height: 100,
+              child: OrderItemDisplay(3, "Veggie"),
+            ),
+            Container(
+              alignment: Alignment.center,
+              color: Colors.blue,
+              width: 100,
+              height: 100,
+              child: OrderItemDisplay(1, "Turkey"),
+            ),
+          ],
         ),
       ),
     );

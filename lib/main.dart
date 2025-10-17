@@ -10,14 +10,20 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-    title: 'Sandwitch Shop App',
-    home: Scaffold(
-      appBar: AppBar(title: const Text('Sandwitch Counter')),
-      body: const Center(
-        child: OrderItemDisplay(5, "Footlong"),
+      title: 'Sandwitch Shop App',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Sandwitch Counter')),
+        body: Center(
+          child: Container(
+            alignment: Alignment.center,
+            color: Colors.amber,
+            width: 300,
+            height: 200,
+            child: OrderItemDisplay(5, "Footlong"),
+          ),
+        ),
       ),
-    ),
-  );
+    );
   }
 }
 

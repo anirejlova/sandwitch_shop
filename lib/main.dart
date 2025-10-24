@@ -13,42 +13,29 @@ class App extends StatelessWidget {
       title: 'Sandwitch Shop App',
       home: Scaffold(
         appBar: AppBar(title: const Text('Sandwitch Counter')),
-        body: 
-        /* Center(
-          child: Container(
-            alignment: Alignment.center,
-            color: Colors.amber,
-            width: 300,
-            height: 200,
-            child: OrderItemDisplay(5, "Footlong"),
+        // The bit that you need to update starts from here
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const OrderItemDisplay(5, 'Footlong'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => print('Add button pressed!'),
+                    child: const Text('Add'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => print('Remove button pressed!'),
+                    child: const Text('Remove'),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ), */
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              color: Colors.red,
-              width: 100,
-              height: 100,
-              child: OrderItemDisplay(2, "Club"),
-            ),
-            Container(
-              alignment: Alignment.center,
-              color: Colors.green,
-              width: 100,
-              height: 100,
-              child: OrderItemDisplay(3, "Veggie"),
-            ),
-            Container(
-              alignment: Alignment.center,
-              color: Colors.blue,
-              width: 100,
-              height: 100,
-              child: OrderItemDisplay(1, "Turkey"),
-            ),
-          ],
         ),
+        // The bit that you need to update ends here
       ),
     );
   }

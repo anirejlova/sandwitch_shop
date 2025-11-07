@@ -83,7 +83,6 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ),
             ),
-            // ...existing code...
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
@@ -95,34 +94,52 @@ class _OrderScreenState extends State<OrderScreen> {
                   children: [
                     SizedBox(
                       width: 100.0,
-                      child: ElevatedButton(
+                      child: StyledButton(
                         onPressed: _increaseQuantity,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: const Text('Add'),
+                        label: 'Add',
                       ),
                     ),
                     SizedBox(
                       width: 100.0,
-                      child: ElevatedButton(
+                      child: StyledButton(
                         onPressed: _decreaseQuantity,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: const Text('Remove'),
+                        label: 'Remove',
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-// ...existing code...
           ],
         ),
       ),
+    );
+  }
+}
+
+class StyledButton extends StatelessWidget{
+  final String label;
+  final VoidCallback onPressed;
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  const StyledButton({
+    required this.label,
+    required this.onPressed,
+    this.backgroundColor = Colors.blue,
+    this.foregroundColor = Colors.white,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
+      ),
+      child: Text(label),
     );
   }
 }

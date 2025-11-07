@@ -83,19 +83,43 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: _increaseQuantity,
-                  child: const Text('Add'),
+            // ...existing code...
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+              child: SizedBox(
+                width:
+                    double.infinity, // make the Row take full available width
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 100.0,
+                      child: ElevatedButton(
+                        onPressed: _increaseQuantity,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Add'),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 100.0,
+                      child: ElevatedButton(
+                        onPressed: _decreaseQuantity,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Remove'),
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: _decreaseQuantity,
-                  child: const Text('Remove'),
-                ),
-              ],
+              ),
             ),
+// ...existing code...
           ],
         ),
       ),

@@ -29,17 +29,31 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   int _quantity = 0;
+  String _note = '';
+  final TextEditingController _noteController = TextEditingController();
 
   void _increaseQuantity() {
     if (_quantity < widget.maxQuantity) {
-      setState(() => _quantity++);
+      setState(() {
+        _note = _noteController.text;
+        _quantity++;
+      });
     }
   }
 
   void _decreaseQuantity() {
     if (_quantity > 0) {
-      setState(() => _quantity--);
+      setState(() {
+        _note = _noteController.text;
+        _quantity--;
+      });
     }
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,6 +69,19 @@ class _OrderScreenState extends State<OrderScreen> {
             OrderItemDisplay(
               _quantity,
               'Footlong',
+              note: _note,
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: TextField(
+                controller: _noteController,
+                decoration: const InputDecoration(
+                  labelText: 'Order note',
+                  hintText: 'e.g., no onions, extra pickles',
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -79,11 +106,20 @@ class _OrderScreenState extends State<OrderScreen> {
 class OrderItemDisplay extends StatelessWidget {
   final String itemType;
   final int quantity;
+  final String note;
 
-  const OrderItemDisplay(this.quantity, this.itemType, {super.key});
+  const OrderItemDisplay(
+    this.quantity,
+    this.itemType, {
+    this.note = '',
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Text("$quantity $itemType sandwitch(es): ${'🥪' * quantity}");
+    final emoji = '🥪' * quantity;
+    final noteText = note.isNotEmpty ? "\nNote: $note" : '';
+    return Text("$quantity $itemType sandwitch(es): $emoji$noteText",
+        textAlign: TextAlign.center);
   }
 }

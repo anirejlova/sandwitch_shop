@@ -27,18 +27,24 @@ class OrderScreen extends StatefulWidget {
   }
 }
 
+class OrderItem {
+  final String type;
+  final String note;
+  OrderItem({required this.type, required this.note});
+}
+
 class _OrderScreenState extends State<OrderScreen> {
-  int _quantity = 0;
-  final List<String> _notes = []; // per-sandwich notes
+  final List<OrderItem> _items = [];
+  String _selectedSize = 'Footlong';
   final TextEditingController _noteController = TextEditingController();
+
+  int get _quantity => _items.length;
 
   void _increaseQuantity() {
     if (_quantity < widget.maxQuantity) {
       setState(() {
-        // attach current note text to the new sandwich and clear input
-        _notes.add(_noteController.text);
+        _items.add(OrderItem(type: _selectedSize, note: _noteController.text));
         _noteController.clear();
-        _quantity++;
       });
     }
   }
@@ -46,9 +52,7 @@ class _OrderScreenState extends State<OrderScreen> {
   void _decreaseQuantity() {
     if (_quantity > 0) {
       setState(() {
-        // remove the last sandwich and its note
-        if (_notes.isNotEmpty) _notes.removeLast();
-        _quantity--;
+        _items.removeLast();
       });
     }
   }
@@ -69,12 +73,40 @@ class _OrderScreenState extends State<OrderScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            OrderItemList(
-              itemType: 'Footlong',
-              quantity: _quantity,
-              notes: _notes,
+            // Size selector row
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Size:'),
+                  const SizedBox(width: 12),
+                  DropdownButton<String>(
+                    value: _selectedSize,
+                    items: const [
+                      DropdownMenuItem(
+                          value: 'Footlong', child: Text('Footlong')),
+                      DropdownMenuItem(
+                          value: 'Six-inch', child: Text('Six-inch')),
+                    ],
+                    onChanged: (val) {
+                      if (val != null) setState(() => _selectedSize = val);
+                    },
+                  ),
+                ],
+              ),
             ),
+
+            const SizedBox(height: 8),
+
+            // Combined summary + per-item list
+            OrderItemList(
+              items: _items,
+            ),
+
             const SizedBox(height: 12),
+
+            // Note input used when adding a new sandwich
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: TextField(
@@ -86,6 +118,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ),
             ),
+
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
@@ -150,33 +183,28 @@ class StyledButton extends StatelessWidget {
 }
 
 class OrderItemList extends StatelessWidget {
-  final String itemType;
-  final List<String> notes;
-  final int quantity;
+  final List<OrderItem> items;
 
   const OrderItemList({
-    required this.itemType,
-    required this.quantity,
-    required this.notes,
+    required this.items,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Build a compact summary plus a per-item static notes list
+    final quantity = items.length;
     final emojis = List.filled(quantity, '🥪').join();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('$quantity $itemType sandwitch(es): $emojis',
-            textAlign: TextAlign.center),
+        Text('$quantity sandwich(es): $emojis', textAlign: TextAlign.center),
         const SizedBox(height: 8),
-        if (notes.isEmpty)
+        if (items.isEmpty)
           const Text('(no notes)', textAlign: TextAlign.center)
         else
-          ...List.generate(notes.length, (i) {
-            final note = notes[i];
+          ...List.generate(items.length, (i) {
+            final item = items[i];
             return Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 6.0, horizontal: 24.0),
@@ -187,7 +215,7 @@ class OrderItemList extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      note.isNotEmpty ? note : '(no note)',
+                      '${item.type}: ${item.note.isNotEmpty ? item.note : '(no note)'}',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -199,24 +227,3 @@ class OrderItemList extends StatelessWidget {
     );
   }
 }
-
-// class OrderItemDisplay extends StatelessWidget {
-//   final String itemType;
-//   final int quantity;
-//   final String note;
-
-//   const OrderItemDisplay(
-//     this.quantity,
-//     this.itemType, {
-//     this.note = '',
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final emoji = '🥪' * quantity;
-//     final noteText = note.isNotEmpty ? note : '(no note)',;
-//     return Text("$quantity $itemType sandwitch(es): $emoji$noteText",
-//         textAlign: TextAlign.center);
-//   }
-// }

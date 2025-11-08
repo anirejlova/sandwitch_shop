@@ -95,14 +95,16 @@ class _OrderScreenState extends State<OrderScreen> {
                     SizedBox(
                       width: 100.0,
                       child: StyledButton(
-                        onPressed: _increaseQuantity,
+                        onPressed: _quantity < widget.maxQuantity
+                            ? _increaseQuantity
+                            : null,
                         label: 'Add',
                       ),
                     ),
                     SizedBox(
                       width: 100.0,
                       child: StyledButton(
-                        onPressed: _decreaseQuantity,
+                        onPressed: _quantity > 0 ? _decreaseQuantity : null,
                         label: 'Remove',
                       ),
                     ),
@@ -117,9 +119,9 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 }
 
-class StyledButton extends StatelessWidget{
+class StyledButton extends StatelessWidget {
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color backgroundColor;
   final Color foregroundColor;
 

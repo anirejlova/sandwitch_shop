@@ -29,13 +29,15 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   int _quantity = 0;
-  String _note = '';
+  final List<String> _notes = []; // per-sandwich notes
   final TextEditingController _noteController = TextEditingController();
 
   void _increaseQuantity() {
     if (_quantity < widget.maxQuantity) {
       setState(() {
-        _note = _noteController.text;
+        // attach current note text to the new sandwich and clear input
+        _notes.add(_noteController.text);
+        _noteController.clear();
         _quantity++;
       });
     }
@@ -44,7 +46,8 @@ class _OrderScreenState extends State<OrderScreen> {
   void _decreaseQuantity() {
     if (_quantity > 0) {
       setState(() {
-        _note = _noteController.text;
+        // remove the last sandwich and its note
+        if (_notes.isNotEmpty) _notes.removeLast();
         _quantity--;
       });
     }
@@ -66,10 +69,10 @@ class _OrderScreenState extends State<OrderScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            OrderItemDisplay(
-              _quantity,
-              'Footlong',
-              note: _note,
+            OrderItemList(
+              itemType: 'Footlong',
+              quantity: _quantity,
+              notes: _notes,
             ),
             const SizedBox(height: 12),
             Padding(
@@ -146,23 +149,74 @@ class StyledButton extends StatelessWidget {
   }
 }
 
-class OrderItemDisplay extends StatelessWidget {
+class OrderItemList extends StatelessWidget {
   final String itemType;
+  final List<String> notes;
   final int quantity;
-  final String note;
 
-  const OrderItemDisplay(
-    this.quantity,
-    this.itemType, {
-    this.note = '',
+  const OrderItemList({
+    required this.itemType,
+    required this.quantity,
+    required this.notes,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final emoji = '🥪' * quantity;
-    final noteText = note.isNotEmpty ? "\nNote: $note" : '';
-    return Text("$quantity $itemType sandwitch(es): $emoji$noteText",
-        textAlign: TextAlign.center);
+    // Build a compact summary plus a per-item static notes list
+    final emojis = List.filled(quantity, '🥪').join();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('$quantity $itemType sandwitch(es): $emojis',
+            textAlign: TextAlign.center),
+        const SizedBox(height: 8),
+        if (notes.isEmpty)
+          const Text('(no notes)', textAlign: TextAlign.center)
+        else
+          ...List.generate(notes.length, (i) {
+            final note = notes[i];
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 6.0, horizontal: 24.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text('🥪', style: TextStyle(fontSize: 24)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      note.isNotEmpty ? note : '(no note)',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+      ],
+    );
   }
 }
+
+// class OrderItemDisplay extends StatelessWidget {
+//   final String itemType;
+//   final int quantity;
+//   final String note;
+
+//   const OrderItemDisplay(
+//     this.quantity,
+//     this.itemType, {
+//     this.note = '',
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final emoji = '🥪' * quantity;
+//     final noteText = note.isNotEmpty ? note : '(no note)',;
+//     return Text("$quantity $itemType sandwitch(es): $emoji$noteText",
+//         textAlign: TextAlign.center);
+//   }
+// }

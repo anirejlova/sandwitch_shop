@@ -74,6 +74,28 @@ void main() {
           find.textContaining('wholemeal footlong sandwich'), findsOneWidget);
     });
 
+    testWidgets('changes between six-inch and footlong',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+      await tester.tap(find.byKey(const Key("length_switch")));
+      await tester.pump();
+      expect(find.textContaining('six-inch sandwich'), findsOneWidget);
+      await tester.tap(find.byKey(const Key("length_switch")));
+      await tester.pump();
+      expect(find.textContaining('footlong sandwich'), findsOneWidget);
+    });
+
+    testWidgets('change from untoasted to toasted',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+      await tester.tap(find.byKey(const Key("toasted_switch")));
+      await tester.pump();
+      expect(find.textContaining('Toasted'), findsOneWidget);
+      await tester.tap(find.byKey(const Key("toasted_switch")));
+      await tester.pump();
+      expect(find.textContaining('Untoasted'), findsOneWidget);
+    });
+
     testWidgets('updates note with TextField', (WidgetTester tester) async {
       await tester.pumpWidget(const App());
       await tester.enterText(
@@ -109,6 +131,7 @@ void main() {
         itemType: 'footlong',
         breadType: BreadType.white,
         orderNote: 'No notes added.',
+        isToasted: false,
       );
       const testApp = MaterialApp(
         home: Scaffold(body: widgetToBeTested),
@@ -125,6 +148,7 @@ void main() {
         itemType: 'footlong',
         breadType: BreadType.white,
         orderNote: 'No notes added.',
+        isToasted: false,
       );
       const testApp = MaterialApp(
         home: Scaffold(body: widgetToBeTested),
@@ -142,6 +166,7 @@ void main() {
         itemType: 'six-inch',
         breadType: BreadType.wheat,
         orderNote: 'No pickles',
+        isToasted: false,
       );
       const testApp = MaterialApp(
         home: Scaffold(body: widgetToBeTested),
@@ -158,6 +183,7 @@ void main() {
         itemType: 'footlong',
         breadType: BreadType.wholemeal,
         orderNote: 'Lots of lettuce',
+        isToasted: true,
       );
       const testApp = MaterialApp(
         home: Scaffold(body: widgetToBeTested),

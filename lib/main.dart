@@ -36,6 +36,7 @@ class _OrderScreenState extends State<OrderScreen> {
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
   BreadType _selectedBreadType = BreadType.white;
+  bool _isToasted = false;
 
   @override
   void initState() {
@@ -118,6 +119,7 @@ class _OrderScreenState extends State<OrderScreen> {
               itemType: sandwichType,
               breadType: _selectedBreadType,
               orderNote: noteForDisplay,
+              isToasted: _isToasted,
             ),
             const SizedBox(height: 20),
             Row(
@@ -125,10 +127,25 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 const Text('six-inch', style: normalText),
                 Switch(
+                  key: const Key("length_switch"),
                   value: _isFootlong,
                   onChanged: _onSandwichTypeChanged,
                 ),
                 const Text('footlong', style: normalText),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('untoasted', style: normalText),
+                Switch(
+                  key: const Key("toasted_switch"),
+                  value: _isToasted,
+                  onChanged: (value) {
+                    setState(() => _isToasted = value);
+                  },
+                ),
+                const Text('toasted', style: normalText),
               ],
             ),
             const SizedBox(height: 10),
@@ -215,6 +232,7 @@ class OrderItemDisplay extends StatelessWidget {
   final int quantity;
   final String itemType;
   final BreadType breadType;
+  final bool isToasted;
   final String orderNote;
 
   const OrderItemDisplay({
@@ -222,19 +240,44 @@ class OrderItemDisplay extends StatelessWidget {
     required this.quantity,
     required this.itemType,
     required this.breadType,
+    required this.isToasted,
     required this.orderNote,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Build a display text for sandwiches; add a little flavor when toasted.
+    String sandwichEmoji = '🥪';
+    if (isToasted) {
+      // show a 'toasted' emoji combo when toasted
+      sandwichEmoji = '🔥🥪';
+    }
+
     String displayText =
-        '$quantity ${breadType.name} $itemType sandwich(es): ${'🥪' * quantity}';
+        '$quantity ${breadType.name} $itemType sandwich(es): ${sandwichEmoji * quantity}';
 
     return Column(
       children: [
         Text(
           displayText,
           style: normalText,
+        ),
+        const SizedBox(height: 8),
+        // toasted indicator row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isToasted ? Icons.whatshot : Icons.water_drop,
+              color: isToasted ? Colors.orange : Colors.blueGrey,
+              size: 18,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              isToasted ? 'Toasted' : 'Untoasted',
+              style: normalText,
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Text(

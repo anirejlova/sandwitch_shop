@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sandwitch_shop/views/app_styles.dart';
-import 'package:sandwitch_shop/repositories/order_repository.dart';
 
 enum BreadType { white, wheat, wholemeal }
 
